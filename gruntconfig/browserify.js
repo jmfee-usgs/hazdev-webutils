@@ -7,6 +7,7 @@ var EXPORTS = [
   'math/Camera',
   'math/Matrix',
   'math/Vector',
+  'mvc/CalendarView',
   'mvc/Collection',
   'mvc/CollectionSelectBox',
   'mvc/CollectionTable',
