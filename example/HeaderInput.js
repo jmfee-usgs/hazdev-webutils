@@ -92,10 +92,20 @@
 		_initialize = function (/*options*/ ) {
 			_this.el.innerHTML = '<h1></h1>';
 			_this.header = _this.el.querySelector('h1');
+			_this.model.on('change:header', _this.renderHeader);
 		};
 
-		_this.render = function (change) {
+		_this.destroy = Util.compose(_this.destroy, function () {
+			_this.model.off('change:header', _this.renderHeader);
+		});
+
+		_this.renderHeader = function () {
+			// whenever header changes
 			_this.header.innerText = _this.model.get('header');
+		}
+
+		_this.render = function (change) {
+			// any part of the model changed
 		};
 
 		_initialize(options);
