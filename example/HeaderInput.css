@@ -1,0 +1,10 @@
+.header-app > .loading-content,
+.header-aop.loading > .header,
+.header-app.loading > .headerinput {
+	display: none;
+}
+
+.header-app.loading > .loading-content {
+	display: block;
+}
+

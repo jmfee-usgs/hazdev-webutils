@@ -114,9 +114,12 @@
 		_this = View(options);
 
 		_initialize = function (options) {
+			_this.el.classList.add('header-app');
+
 			_this.headerUrl = options.headerUrl;
 
 			_this.el.innerHTML =
+					'<div class="loading-content">Loading...</div>' +
 					'<div class="header"></div>' +
 					'<div class="headerinput"></div>';
 
@@ -139,6 +142,8 @@
 		});
 
 		_this.loadHeader = function () {
+			_this.el.classList.add('loading');
+
 			Xhr.ajax({
 				url: _this.headerUrl,
 				success: function (json) {
@@ -150,6 +155,9 @@
 					_this.model.set({
 						header: 'Error loading header'
 					});
+				},
+				done: function () {
+					_this.el.classList.remove('loading');
 				}
 			});
 		};
@@ -166,9 +174,10 @@
 
 
 
-	window.HeaderApp = HeaderApp({
+	var app = window.HeaderApp = HeaderApp({
 		el: document.querySelector('#headerinput'),
 		model: HeaderModel()
 	});
+	app.model.trigger('change');
 
 })();
