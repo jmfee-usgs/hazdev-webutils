@@ -36,20 +36,28 @@
 				'<label for="header">Header</label>' +
 				'<input type="text" id="header"/>' +
 				'<button type="submit">Update Header</button>' +
+				'<button type="button" class="otherbutton">Another button</button>' +
 				'</form>';
 
-			_this.button = _this.el.querySelector('button');
+			_this.button = _this.el.querySelector('button[type=submit]');
+			_this.otherButton = _this.el.querySelector('.otherbutton');
 			_this.form = _this.el.querySelector('form');
 			_this.input = _this.el.querySelector('input');
 
 			_this.form.addEventListener('submit', _this.onSubmit);
+			_this.otherButton.addEventListener('click', _this.onOtherButtonClick);
 			_this.render();
 		};
 
 		_this.destroy = Util.compose(_this.destroy, function () {
 			_this.form.removeEventListener('submit', _this.onSubmit);
+			_this.otherButton.removeEventListener('click', _this.onOtherButtonClick);
 			_this = null;
 		});
+
+		_this.onOtherButtonClick = function (e) {
+			_this.trigger('other-button-click', e);
+		};
 
 		_this.onSubmit = function (e) {
 			if (e) {
@@ -88,7 +96,6 @@
 		};
 
 		_this.render = function (change) {
-			console.log(change);
 			_this.header.innerText = _this.model.get('header');
 		};
 
@@ -118,7 +125,19 @@
 				el: _this.el.querySelector('.headerinput'),
 				model: _this.model
 			});
+
+			_this.headerInputView.on('other-button-click', 'onHeaderInputViewOtherButtonClick', _this);
 		};
+
+		_this.destroy = Util.compose(_this.destroy, function () {
+			_this.headerInputView.off();
+		});
+
+		_this.onHeaderInputViewOtherButtonClick = function (e) {
+			console.log('other button clicked');
+			console.log(e);
+		};
+
 
 		_initialize(options);
 		options = null;
