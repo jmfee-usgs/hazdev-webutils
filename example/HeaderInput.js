@@ -8,7 +8,8 @@
 (function () {
 	var Model = require('mvc/Model'),
 		View = require('mvc/View'),
-		Util = require('util/Util');
+		Util = require('util/Util'),
+		Xhr = require('util/Xhr');
 
 
 	var HeaderModel = function(options) {
@@ -46,7 +47,6 @@
 
 			_this.form.addEventListener('submit', _this.onSubmit);
 			_this.otherButton.addEventListener('click', _this.onOtherButtonClick);
-			_this.render();
 		};
 
 		_this.destroy = Util.compose(_this.destroy, function () {
@@ -92,7 +92,6 @@
 		_initialize = function (/*options*/ ) {
 			_this.el.innerHTML = '<h1></h1>';
 			_this.header = _this.el.querySelector('h1');
-			_this.render();
 		};
 
 		_this.render = function (change) {
@@ -109,9 +108,14 @@
 		var _this,
 			_initialize;
 
+		options = Util.extend({}, {
+			headerUrl: 'HeaderInputData.json'
+		}, options);
 		_this = View(options);
 
-		_initialize = function (/*options*/) {
+		_initialize = function (options) {
+			_this.headerUrl = options.headerUrl;
+
 			_this.el.innerHTML =
 					'<div class="header"></div>' +
 					'<div class="headerinput"></div>';
@@ -127,22 +131,39 @@
 			});
 
 			_this.headerInputView.on('other-button-click', 'onHeaderInputViewOtherButtonClick', _this);
+			_this.loadHeader();
 		};
 
 		_this.destroy = Util.compose(_this.destroy, function () {
 			_this.headerInputView.off();
 		});
 
+		_this.loadHeader = function () {
+			Xhr.ajax({
+				url: _this.headerUrl,
+				success: function (json) {
+					_this.model.set({
+						header: json.header
+					});
+				},
+				error: function () {
+					_this.model.set({
+						header: 'Error loading header'
+					});
+				}
+			});
+		};
+
 		_this.onHeaderInputViewOtherButtonClick = function (e) {
 			console.log('other button clicked');
 			console.log(e);
 		};
 
-
 		_initialize(options);
 		options = null;
 		return _this;
 	};
+
 
 
 	window.HeaderApp = HeaderApp({
